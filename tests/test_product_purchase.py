@@ -28,34 +28,42 @@ def test_search_and_add_product_to_cart(page):
     cart_page.click_proceed_to_checkout()
 
 
-def test_add_blue_top_and_logout(page):
-    """
-    Test Case: Login with naveenppandey8080@gmail.com, search 'Blue Top',
-    add to cart, proceed to cart, and logout.
-    """
+def test_add_random_product_and_logout(page):
+    """3-Level Random Purchase Test: Category -> Subcategory -> Product."""
     home_page = HomePage(page)
     login_page = LoginPage(page)
     products_page = ProductsPage(page)
     cart_page = CartPage(page)
 
-    # Step 1: Open Home page and login with naveenppandey8080@gmail.com
+    # 1. Open home page and login
     home_page.open()
     home_page.click_signup_login()
     login_page.login("naveenppandey8080@gmail.com", "Np@123")
 
-    # Step 2: Go to Products page & search 'Blue Top'
+    # 2. Go to Products page
     home_page.click_products()
-    products_page.search_product("Blue Top")
-    assert products_page.is_search_results_visible()
 
-    # Step 3: Add 'Blue Top' to cart
-    products_page.add_first_product_to_cart()
+    # 3. Level 1 - Select Random Category
+    category_name = products_page.select_random_category()
+    print(f"\n[Level 1 - Random Category]: {category_name}")
+
+    # 4. Level 2 - Select Random Subcategory
+    subcategory_name = products_page.select_random_subcategory()
+    print(f"[Level 2 - Random Subcategory]: {subcategory_name}")
+
+    # 5. Level 3 - Select Random Product
+    selected_product_name = products_page.select_random_product()
+    print(f"[Level 3 - Random Product]: {selected_product_name}")
+
+    # 6. Verify product in cart
     products_page.click_view_cart_in_modal()
-
-    # Step 4: Verify 'Blue Top' is in cart section
     assert cart_page.is_cart_page_displayed()
-    assert cart_page.is_product_in_cart("Blue Top")
+    assert cart_page.is_product_in_cart(selected_product_name)
 
-    # Step 5: Log out
+    # 7. Logout
     login_page.click_logout()
     assert login_page.is_login_page_displayed()
+
+
+
+

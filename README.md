@@ -110,3 +110,18 @@ screenshots/<test_name>_failure.png
 ## 📊 CSV Data-Driven Testing
 
 The framework uses `utils/csv_data_provider.py` to parse CSV files in `test_data/`. Pytest's `@pytest.mark.parametrize` decorates test functions to run the same test against multiple data rows automatically.
+
+---
+
+## 🎲 Dynamic Test Data & 3-Level Random Selection
+
+### Why Avoid Hardcoded Product & Category Names?
+Hardcoding specific names (e.g. `"WOMEN"`, `"JEANS"`, `"Blue Top"`) makes tests fragile. If items are renamed, removed, or out of stock, fixed-data tests fail even when the application is working fine.
+
+### 3-Level Randomization Flow
+1. **Level 1 (Category)**: Page Object discovers top-level categories dynamically (`WOMEN`, `MEN`, `KIDS`) and clicks one randomly.
+2. **Level 2 (Subcategory)**: Page Object discovers subcategories belonging to the selected category (`DRESS`, `TOPS`, `TSHIRTS`, `JEANS`) and clicks one randomly.
+3. **Level 3 (Product)**: Page Object discovers available product cards on the subcategory page, picks one randomly, adds it to the cart, and returns `selected_product_name`.
+4. **Cart Verification**: The test passes `selected_product_name` to `cart_page.is_product_in_cart()` to verify the exact product added.
+
+

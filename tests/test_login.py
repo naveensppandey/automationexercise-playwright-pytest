@@ -8,11 +8,9 @@ def test_login_page_navigation(page):
     home_page = HomePage(page)
     login_page = LoginPage(page)
 
-    # 1. Open home page
     home_page.open()
     assert home_page.is_loaded()
 
-    # 2. Click Signup / Login
     home_page.click_signup_login()
     assert login_page.is_login_page_displayed()
 
@@ -22,37 +20,30 @@ def test_invalid_login(page):
     home_page = HomePage(page)
     login_page = LoginPage(page)
 
-    # 1. Open home page and navigate to login
     home_page.open()
     home_page.click_signup_login()
-
-    # 2. Enter invalid email and password
     login_page.login("wrong_user@gmail.com", "wrongpass123")
 
-    # 3. Verify error message appears
     error_msg = login_page.get_error_message()
     assert len(error_msg) > 0
 
 
-# Test Case 3: Data-Driven Login Test reading rows from login_data.csv
+# Test Case 3: Data-Driven Login Test reading from login_data.csv
 @pytest.mark.parametrize("row", read_csv_data("test_data/login_data.csv"))
 def test_csv_data_driven_login(page, row):
-    # Get values from CSV row
-    username = row.get("username") or row.get("email")
-    password = row["password"]
-    expected_result = row.get("expectedResult") or row.get("expected_status")
-
-    # Initialize Page Objects
     home_page = HomePage(page)
     login_page = LoginPage(page)
 
-    # Execute login steps
+    username = row["username"]
+    password = row["password"]
+    expected_result = row["expectedResult"]
+
     home_page.open()
     home_page.click_signup_login()
     login_page.login(username, password)
 
-    # Verify result based on expectedResult column
     if expected_result == "success":
-        assert login_page.is_login_successful() or not login_page.is_visible(login_page.ERROR_MESSAGE)
+        assert login_page.is_login_successful()
     else:
         assert len(login_page.get_error_message()) > 0
+
