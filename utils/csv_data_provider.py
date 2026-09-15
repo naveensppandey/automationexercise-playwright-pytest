@@ -1,5 +1,6 @@
 import csv
 import os
+import random
 
 def read_csv_data(filename):
     """
@@ -15,3 +16,10 @@ def read_csv_data(filename):
         for row in reader:
             rows.append(row)
     return rows
+
+def get_random_valid_user(filename="test_data/login_data.csv"):
+    """Reads CSV file and returns a randomly selected valid user dictionary."""
+    rows = read_csv_data(filename)
+    valid_users = [row for row in rows if row.get("expectedResult") == "success"]
+    return random.choice(valid_users)
+

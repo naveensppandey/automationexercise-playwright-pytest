@@ -1,3 +1,5 @@
 username,password,expectedResult
 naveenppandey8080@gmail.com,Np@123,success
+pandeynaveen360@gmail.com,Ap@123,success
+naveenssp8080@gmail.com,As@123,success
 random_fake_user999@gmail.com,WrongPass999,fail
