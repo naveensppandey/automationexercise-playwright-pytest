@@ -13,17 +13,24 @@ class BasePage:
         self.page.goto(url, wait_until="domcontentloaded")
 
     def click(self, selector):
-        # Click on an element
+        # Click element using Playwright locator
         self.page.locator(selector).click()
 
     def fill(self, selector, text):
-        # Clear field and type text
+        # Fill input field using Playwright locator
         self.page.locator(selector).fill(text)
 
     def get_text(self, selector):
-        # Get visible text from an element
+        # Get text content from element
         return self.page.locator(selector).inner_text().strip()
 
-    def is_visible(self, selector):
-        # Check if element is visible on page
-        return self.page.locator(selector).is_visible()
+    def is_visible(self, selector, timeout=5000):
+        # Check if element becomes visible on page within timeout
+        try:
+            self.page.locator(selector).first.wait_for(state="visible", timeout=timeout)
+            return True
+        except Exception:
+            return False
+
+
+
