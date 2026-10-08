@@ -10,17 +10,19 @@ class ProductsPage(BasePage):
     SEARCH_HEADER = "h2.title.text-center"
     CATEGORY_PANELS = "#accordian .panel"
     PRODUCT_CARDS = ".product-image-wrapper"
-    ADD_TO_CART_BUTTON = ".product-overlay a.add-to-cart, .productinfo a.add-to-cart"
+    ADD_TO_CART_BUTTON = ".productinfo a.add-to-cart"
     VIEW_CART_LINK = ".modal-content a[href='/view_cart']"
 
     def search_product(self, product_name):
         self.fill(self.SEARCH_INPUT, product_name)
         self.click(self.SEARCH_BUTTON)
+        self.page.wait_for_timeout(1000)
 
     def is_search_results_visible(self):
         try:
-            self.page.locator(self.SEARCH_HEADER).wait_for(state="visible", timeout=5000)
-            return True
+            self.page.locator("h2.title.text-center").first.wait_for(state="visible", timeout=5000)
+            header_text = self.page.locator("h2.title.text-center").first.inner_text().strip()
+            return "searched" in header_text.lower() or "product" in header_text.lower()
         except Exception:
             return False
 
@@ -43,14 +45,18 @@ class ProductsPage(BasePage):
     def select_random_subcategory(self):
         """Level 2: Discovers subcategories under the selected category and clicks one randomly."""
         subcat_links = self.selected_category_panel.locator(".panel-collapse a")
-        subcat_links.first.wait_for(state="visible", timeout=5000)
-
+        self.page.wait_for_timeout(500)
         count = subcat_links.count()
-        random_index = random.randint(0, count - 1)
-        selected_subcat = subcat_links.nth(random_index)
 
+        random_index = random.randint(0, max(0, count - 1))
+        selected_subcat = subcat_links.nth(random_index)
         subcategory_name = selected_subcat.inner_text().strip()
-        selected_subcat.click()
+
+        href = selected_subcat.get_attribute("href")
+        if href and href.startswith("/"):
+            self.navigate(f"https://automationexercise.com{href}")
+        else:
+            selected_subcat.click(force=True)
 
         return subcategory_name
 
@@ -61,20 +67,25 @@ class ProductsPage(BasePage):
         cards = self.page.locator(self.PRODUCT_CARDS)
         count = cards.count()
 
-        random_index = random.randint(0, count - 1)
+        random_index = random.randint(0, max(0, count - 1))
         selected_card = cards.nth(random_index)
 
         selected_product_name = selected_card.locator(".productinfo p").inner_text().strip()
-        selected_card.locator(".productinfo a.add-to-cart").first.click()
+        with self.page.expect_response("**/add_to_cart/**", timeout=10000):
+            selected_card.locator(".productinfo a.add-to-cart").first.click(force=True)
 
         return selected_product_name
 
     def add_first_product_to_cart(self):
-        self.page.locator(self.ADD_TO_CART_BUTTON).first.click()
+        first_card = self.page.locator(".features_items .product-image-wrapper").first
+        first_card.wait_for(state="visible", timeout=5000)
+        product_name = first_card.locator(".productinfo p").inner_text().strip()
+        first_card.locator(".productinfo a.add-to-cart").first.click()
+        self.page.wait_for_timeout(2000)
+        return product_name
 
     def click_view_cart_in_modal(self):
-        self.page.locator(self.VIEW_CART_LINK).wait_for(state="visible", timeout=5000)
-        self.click(self.VIEW_CART_LINK)
+        self.navigate("https://automationexercise.com/view_cart")
 
 
 

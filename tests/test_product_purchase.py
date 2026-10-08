@@ -16,11 +16,11 @@ def test_search_and_add_product_to_cart(page):
     products_page.search_product("dress")
     assert products_page.is_search_results_visible()
 
-    products_page.add_first_product_to_cart()
+    added_product = products_page.add_first_product_to_cart()
     products_page.click_view_cart_in_modal()
 
     assert cart_page.is_cart_page_displayed()
-    assert cart_page.is_product_in_cart("dress")
+    assert cart_page.is_product_in_cart(added_product)
     cart_page.click_proceed_to_checkout()
 
 

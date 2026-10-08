@@ -1,10 +1,17 @@
 # AutomationExercise Playwright POM Framework
 
-A beginner-friendly, end-to-end UI automation testing framework built using **Python**, **Playwright (Sync API)**, **Pytest**, **Page Object Model (POM)**, **Excel & CSV Data-Driven Testing**, **Keyword-Driven Testing**, **BDD (pytest-bdd)**, **Jenkins CI/CD**, and **GitHub Actions**.
+A beginner-friendly, industry-relevant UI automation framework built using **Python**, **Playwright**, **pytest**, **Page Object Model (POM)**, **Data-Driven Testing (CSV & Excel)**, **Keyword-Driven Testing**, **BDD (pytest-bdd)**, **Randomized Testing**, **Multi-Browser Support**, **Jenkins CI/CD**, and **GitHub Actions**.
 
 ---
 
-## 📁 Project Structure
+## 📌 Project Overview
+This project automates key user scenarios on the [AutomationExercise](https://automationexercise.com/) website. It demonstrates core automation architecture principles while remaining beginner-friendly and easy to explain. 
+
+A key highlight of this repository is the **50-test-case Excel Repository** (`test_data/test_cases.xlsx`), which documents 50 complete test scenarios designed for future automation scope. A focused subset of **~10–12 practical scenarios** (plus BDD, keyword, and randomized tests) is automated in the active Pytest suite.
+
+---
+
+## 📁 Folder Structure
 
 ```
 AutomationExercise_Playwright/
@@ -18,31 +25,31 @@ AutomationExercise_Playwright/
 ├── features/
 │   └── login.feature             # BDD Feature File (Gherkin format)
 │
-├── pages/                        # Page Object Classes
+├── pages/                        # Page Object Model Classes
 │   ├── base_page.py              # Parent class with reusable Playwright actions
 │   ├── home_page.py              # Home page locators and actions
 │   ├── login_page.py             # Login & signup page locators and actions
-│   ├── products_page.py          # Products catalog & 3-level randomization
+│   ├── products_page.py          # Products catalog & randomized selection
 │   └── cart_page.py              # Shopping cart view and assertions
 │
 ├── screenshots/                  # Failure screenshots directory (auto-captured)
 │
 ├── test_data/                    # Test Data Files
 │   ├── login_data.csv            # CSV file with user login accounts
-│   └── test_cases.xlsx           # Excel file containing 50 test cases
+│   └── test_cases.xlsx           # Excel Repository with 50 test cases (Documentation / Future Scope)
 │
 ├── tests/                        # Test Suites
 │   ├── step_definitions/
 │   │   └── test_login_steps.py   # BDD Step Definitions using pytest-bdd
-│   ├── test_excel_data_driven.py # Excel Data-Driven test suite
+│   ├── test_excel_data_driven.py # Excel Data-Driven sample test suite
 │   ├── test_keyword_driven.py   # Keyword-Driven test suite
 │   ├── test_login.py             # Login tests & CSV data-driven login test
-│   └── test_product_purchase.py  # End-to-end product purchase test
+│   └── test_product_purchase.py  # Product search & randomized purchase flow
 │
 ├── utils/                        # Helper Utilities
-│   ├── csv_data_provider.py      # Utility to read CSV test data
+│   ├── csv_data_provider.py      # Utility to read CSV test data & select random users
 │   ├── excel_data_provider.py    # Utility to read Excel test cases (openpyxl)
-│   └── keyword_actions.py        # Utility to execute Keyword Driven actions
+│   └── keyword_actions.py        # Utility to execute Keyword-Driven actions
 │
 ├── .gitignore
 ├── conftest.py                   # Pytest fixtures, multi-browser (--browser), hooks
@@ -54,84 +61,127 @@ AutomationExercise_Playwright/
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Prerequisites
-- Python 3.8 or higher installed on your system.
-
-### 2. Installation
-Open your terminal in the project directory and run:
-
-```bash
-# Install Python package dependencies
-pip install -r requirements.txt
-
-# Install Playwright browser binaries
-playwright install
-```
+## 🛠️ Technologies Used
+- **Language**: Python 3.8+
+- **Automation Tool**: Playwright (Sync API)
+- **Test Runner**: pytest & pytest-bdd
+- **Excel Reader**: openpyxl
+- **Data Formats**: CSV & Excel (.xlsx)
+- **Design Pattern**: Page Object Model (POM)
+- **CI/CD**: Jenkins Pipeline & GitHub Actions
 
 ---
 
-## 🧪 Running Tests
+## 🚀 How to Install
 
-### Run All Tests (Chromium - Default)
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/naveensppandey/automationexercise-playwright-pytest.git
+   cd AutomationExercise_Playwright
+   ```
+
+2. **Install Python dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Install Playwright browser binaries**:
+   ```bash
+   playwright install
+   ```
+
+---
+
+## 🧪 How to Run Tests
+
+### 1. Run Full Test Suite (Default - Headless Chromium)
 ```bash
 pytest
 ```
 
-### Run Tests on Chromium Browser
+### 2. Run Tests on Chromium Browser
 ```bash
 pytest --browser chromium
 ```
 
-### Run Tests on Firefox Browser
+### 3. Run Tests on Firefox Browser
 ```bash
 pytest --browser firefox
 ```
 
-### Run Tests in Headed Mode (Watch Browser UI Live)
+### 4. Run Tests in Headed Mode (Watch Browser UI Live)
 ```bash
 pytest --headed -s
 ```
 
-### Run BDD Feature Tests
+### 5. Run Specific Test Modules
 ```bash
+# Run Login Tests & CSV Data-Driven Tests
+pytest tests/test_login.py
+
+# Run Product Purchase & Randomization Tests
+pytest tests/test_product_purchase.py
+
+# Run BDD Feature Tests
 pytest tests/step_definitions/test_login_steps.py
-```
 
-### Run Keyword-Driven Tests
-```bash
+# Run Keyword-Driven Tests
 pytest tests/test_keyword_driven.py
-```
 
-### Run Excel Data-Driven Tests
-```bash
+# Run Excel Data-Driven Sample Tests
 pytest tests/test_excel_data_driven.py
 ```
 
 ---
 
-## 💡 Key Testing Concepts Explained
+## 💡 Key Framework Concepts Explained
 
-### 1. Page Object Model (POM)
-Web pages are represented as Python classes (`pages/home_page.py`, `pages/login_page.py`). Locators and actions live inside Page Object classes, keeping test files clean and readable.
+### 1. Excel Test-Case Repository (Documentation & Future Scope)
+- Located in `test_data/test_cases.xlsx`.
+- Contains **50 structured test cases** across Authentication, Product Navigation, Cart Management, Search, Category Navigation, and Checkout.
+- **Strategy**: Serves as a test repository demonstrating full test coverage design. A sample subset is executed in `tests/test_excel_data_driven.py`, keeping test execution fast while leaving the remaining rows for future automation expansion.
 
-### 2. Data-Driven Testing (CSV & Excel)
-- **CSV**: Uses `utils/csv_data_provider.py` and `@pytest.mark.parametrize` to run tests across multiple rows in `test_data/login_data.csv`.
-- **Excel**: Uses `utils/excel_data_provider.py` (powered by `openpyxl`) to read test cases from `test_data/test_cases.xlsx`.
+### 2. Data Driven Testing (CSV & Excel)
+- **CSV Data Provider** (`utils/csv_data_provider.py`): Parametrizes login tests using `@pytest.mark.parametrize` over `test_data/login_data.csv`.
+- **Excel Data Provider** (`utils/excel_data_provider.py`): Uses `openpyxl` to parse `.xlsx` files into dictionaries.
 
-### 3. Keyword-Driven Testing
-Test steps are defined as high-level keywords (`OPEN`, `CLICK`, `FILL`, `SEARCH`, `ADD_TO_CART`, `OPEN_CART`, `LOGOUT`). The keyword execution helper `utils/keyword_actions.py` maps each keyword to Playwright page actions.
+### 3. Simple Keyword Driven Testing
+- **Helper** (`utils/keyword_actions.py`): Maps high-level keywords (`OPEN`, `CLICK`, `FILL`, `SEARCH`, `ADD_TO_CART`, `LOGOUT`) directly to Page Object locator calls.
+- **Test File** (`tests/test_keyword_driven.py`): Demonstrates executing a sequence of keyword steps.
 
 ### 4. BDD (Behavior-Driven Development)
-Feature scenarios are written in Gherkin format inside `features/login.feature` using Given-When-Then steps. Step definitions in `tests/step_definitions/test_login_steps.py` bind each Gherkin step to Page Object actions using `pytest-bdd`.
+- **Feature File** (`features/login.feature`): Written in standard Gherkin format (`Given`, `When`, `Then`).
+- **Step Definitions** (`tests/step_definitions/test_login_steps.py`): Binds Gherkin steps to Page Objects using `pytest-bdd`.
 
-### 5. Multi-Browser Testing (Chromium & Firefox)
-Configured via `conftest.py`. You can execute the test suite against Chromium or Firefox seamlessly using `--browser chromium` or `--browser firefox`.
+### 5. Randomization
+- Demonstrates dynamic test execution using Python's `random` module in `tests/test_product_purchase.py`:
+  1. Opens Products page.
+  2. Selects a random product dynamically (`random.randint`).
+  3. Opens details, adds it to cart, and asserts cart contents.
 
-### 6. Continuous Integration (CI/CD)
-- **Jenkins Pipeline (`Jenkinsfile`)**: Defines stages for Checkout, Installing Dependencies, Installing Playwright, Running Pytest, and generating JUnit XML reports (`test-results.xml`).
-- **GitHub Actions (`.github/workflows/playwright-tests.yml`)**: Automatically triggers test runs on `push` and `pull_request` to the repository.
+### 6. Cross-Browser Execution (Chromium & Firefox)
+- Handled cleanly via `conftest.py` with `--browser chromium` and `--browser firefox` flags.
+
+### 7. Jenkins CI/CD Pipeline
+- Defined in `Jenkinsfile` with 4 declarative stages:
+  1. **Checkout Code**
+  2. **Install Dependencies**
+  3. **Install Playwright Browsers**
+  4. **Run Pytest** (Generates `test-results.xml` JUnit reports)
+
+### 8. GitHub Actions CI/CD Workflow
+- Defined in `.github/workflows/playwright-tests.yml`.
+- Automatically triggers test execution on `push` or `pull_request` across both Chromium and Firefox.
+
+---
+
+## 🔮 Future Enhancements (Future Scope)
+- Automate remaining Excel test cases from `test_data/test_cases.xlsx`.
+- Add Webkit / Safari browser support.
+- Add API testing integration.
+- Add Allure HTML reporting integration.
+- Add parallel test execution using `pytest-xdist`.
+
 
 
 

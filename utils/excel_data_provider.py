@@ -1,10 +1,11 @@
 import os
 import openpyxl
 
-def read_excel_data(filename="test_data/test_cases.xlsx", sheet_name="TestCases"):
+def read_excel_data(filename="test_data/test_cases.xlsx", sheet_name="TestCases", limit=None):
     """
     Simple function to read an Excel (.xlsx) sheet using openpyxl
     and return rows as a list of dictionaries.
+    Optional limit parameter allows loading a subset for automated execution.
     """
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filepath = os.path.join(project_root, filename)
@@ -19,6 +20,8 @@ def read_excel_data(filename="test_data/test_cases.xlsx", sheet_name="TestCases"
         if any(row):
             row_dict = dict(zip(headers, row))
             rows.append(row_dict)
+            if limit and len(rows) >= limit:
+                break
 
     workbook.close()
     return rows

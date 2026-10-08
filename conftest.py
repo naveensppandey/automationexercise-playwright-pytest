@@ -38,6 +38,8 @@ def page(request):
         context.route("**/*googlesyndication*", lambda route: route.abort())
         context.route("**/*doubleclick*", lambda route: route.abort())
         context.route("**/*adservice*", lambda route: route.abort())
+        context.route("**/*pagead*", lambda route: route.abort())
+        context.route("**/*adsbygoogle*", lambda route: route.abort())
 
         page_instance = context.new_page()
         
