@@ -1,0 +1,3 @@
+This is a sample test document for file upload testing in AutomationExercise.
+File: sample_upload.txt
+Test Case: TC46

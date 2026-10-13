@@ -31,3 +31,17 @@ class CartPage(BasePage):
     def click_proceed_to_checkout(self):
         # Click Proceed to Checkout button
         self.click(self.CHECKOUT_BUTTON)
+
+    def get_table_headers(self):
+        # Get list of header texts from cart table
+        return self.page.locator("#cart_info_table thead td").all_inner_texts()
+
+    def get_product_quantity(self, product_name):
+        # Get quantity value for a given product in cart table
+        row = self.page.locator(f"#cart_info_table tr:has-text('{product_name}')")
+        return row.locator("td.cart_quantity button").inner_text().strip()
+
+    def is_empty_cart_displayed(self):
+        # Check if empty cart notification or empty table is displayed
+        return self.is_visible("#empty_cart") or self.page.locator("#cart_info_table tbody tr").count() == 0
+

@@ -12,6 +12,13 @@ class LoginPage(BasePage):
     LOGOUT_LINK = "a[href='/logout']"
     ERROR_MESSAGE = ".login-form p"
 
+    # Signup Form Locators
+    SIGNUP_HEADER = ".signup-form h2"
+    SIGNUP_NAME_INPUT = "input[data-qa='signup-name']"
+    SIGNUP_EMAIL_INPUT = "input[data-qa='signup-email']"
+    SIGNUP_BUTTON = "button[data-qa='signup-button']"
+    SIGNUP_ERROR_MESSAGE = ".signup-form p"
+
     def is_login_page_displayed(self):
         # Verify 'Login to your account' header is visible
         return self.is_visible(self.LOGIN_HEADER)
@@ -53,3 +60,18 @@ class LoginPage(BasePage):
     def click_logout(self):
         # Click logout link in top navbar
         self.click(self.LOGOUT_LINK)
+
+    def signup_initial(self, name, email):
+        # Fill name and email under New User Signup and click Signup
+        self.fill(self.SIGNUP_NAME_INPUT, name)
+        self.fill(self.SIGNUP_EMAIL_INPUT, email)
+        self.click(self.SIGNUP_BUTTON)
+
+    def get_signup_error_message(self):
+        # Get signup error message (e.g. 'Email Address already exists!')
+        try:
+            self.page.locator(self.SIGNUP_ERROR_MESSAGE).wait_for(state="visible", timeout=5000)
+            return self.get_text(self.SIGNUP_ERROR_MESSAGE)
+        except Exception:
+            return ""
+

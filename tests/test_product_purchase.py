@@ -24,6 +24,9 @@ def test_search_and_add_product_to_cart(page):
     cart_page.click_proceed_to_checkout()
 
 
+import pytest
+
+@pytest.mark.tc_id("TC50")
 def test_add_random_product_and_logout(page):
     """End-to-End Test with Random User Login & 3-Level Product Randomization."""
     home_page = HomePage(page)
