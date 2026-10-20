@@ -1,6 +1,12 @@
+import os
+import time
 import pytest
 from pages.home_page import HomePage
 from pages.products_page import ProductsPage
+
+# ==============================================================================
+# PRODUCTS & CATALOG TEST CASES (TC11 - TC14, TC16 - TC20)
+# ==============================================================================
 
 @pytest.mark.tc_id("TC11")
 def test_tc11_navigate_to_products_page(page):
@@ -111,6 +117,10 @@ def test_tc20_verify_all_products_header(page):
 
     assert products_page.is_all_products_header_visible(), "'ALL PRODUCTS' header was not visible"
 
+# ==============================================================================
+# CATEGORY & SUBCATEGORY TEST CASES (TC21 - TC25)
+# ==============================================================================
+
 @pytest.mark.tc_id("TC21")
 def test_tc21_expand_women_category(page):
     """TC21: Expand Women category in sidebar."""
@@ -172,3 +182,87 @@ def test_tc25_select_men_tshirts_subcategory(page):
 
     header_text = page.locator("h2.title.text-center").first.inner_text().strip()
     assert "men" in header_text.lower() or "tshirt" in header_text.lower(), f"Unexpected header: {header_text}"
+
+# ==============================================================================
+# CONTACT US TEST CASES (TC44 - TC46)
+# ==============================================================================
+
+@pytest.mark.tc_id("TC44")
+def test_tc44_navigate_to_contact_us_page(page):
+    """TC44: Navigate to Contact Us page."""
+    home_page = HomePage(page)
+
+    home_page.open()
+    home_page.click_contact_us()
+
+    assert home_page.is_contact_page_displayed() or "contact_us" in page.url.lower(), "Contact Us page not displayed"
+
+@pytest.mark.tc_id("TC45")
+def test_tc45_submit_contact_us_form(page):
+    """TC45: Submit Contact Us form and verify success message."""
+    home_page = HomePage(page)
+
+    home_page.open_contact_us()
+    home_page.fill_contact_form(
+        name="Student Demo",
+        email="student_demo@test.com",
+        subject="Project Inquiry",
+        message="This is a test message from our automated Playwright framework."
+    )
+    home_page.submit_contact_form()
+
+    assert home_page.is_contact_success_displayed(), "Contact submission success message not displayed"
+
+@pytest.mark.tc_id("TC46")
+def test_tc46_upload_file_in_contact_us(page):
+    """TC46: Attach file and submit Contact Us form."""
+    home_page = HomePage(page)
+    sample_file = os.path.abspath("test_data/sample_upload.txt")
+
+    home_page.open_contact_us()
+    home_page.fill_contact_form(
+        name="Upload User",
+        email="upload_user@test.com",
+        subject="File Upload Verification",
+        message="Testing file upload capability."
+    )
+    home_page.upload_contact_file(sample_file)
+    home_page.submit_contact_form()
+
+    assert home_page.is_contact_success_displayed(), "Success message after file upload not displayed"
+
+# ==============================================================================
+# HOME PAGE TEST CASES (TC47 - TC49)
+# ==============================================================================
+
+@pytest.mark.tc_id("TC47")
+def test_tc47_verify_home_page_logo(page):
+    """TC47: Verify Home Page logo visibility."""
+    home_page = HomePage(page)
+
+    home_page.open()
+    assert home_page.is_loaded(), "Home page logo was not visible"
+
+@pytest.mark.tc_id("TC48")
+def test_tc48_scroll_to_bottom_and_top(page):
+    """TC48: Scroll to bottom and back to top of Home Page."""
+    home_page = HomePage(page)
+
+    home_page.open()
+    home_page.scroll_to_bottom()
+    assert home_page.is_footer_visible(), "Footer not visible after scrolling to bottom"
+
+    home_page.scroll_to_top()
+    assert home_page.is_loaded(), "Header logo not visible after scrolling to top"
+
+@pytest.mark.tc_id("TC49")
+def test_tc49_subscription_form_in_footer(page):
+    """TC49: Enter email in footer subscription form."""
+    home_page = HomePage(page)
+
+    home_page.open()
+    home_page.scroll_to_bottom()
+    temp_email = f"sub_{int(time.time())}@subscribe.com"
+    home_page.subscribe(temp_email)
+
+    assert home_page.is_subscribe_success_displayed(), "Subscription success message not displayed"

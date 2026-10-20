@@ -1,3 +1,4 @@
+import time
 import pytest
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
@@ -6,6 +7,10 @@ from utils.csv_data_provider import read_csv_data
 # Valid test user credentials
 VALID_EMAIL = "naveenppandey8080@gmail.com"
 VALID_PASSWORD = "Np@123"
+
+# ==============================================================================
+# LOGIN TEST CASES (TC01 - TC10)
+# ==============================================================================
 
 @pytest.mark.tc_id("TC01")
 def test_tc01_navigate_to_login_page(page):
@@ -65,10 +70,8 @@ def test_tc05_blank_credentials_login(page):
 
     home_page.open()
     home_page.click_signup_login()
-    # Click login button without filling fields
     login_page.click_login()
 
-    # Form submission is prevented by HTML5 validation, user remains on login page
     assert login_page.is_login_page_displayed(), "Should remain on login page when submitting blank fields"
 
 @pytest.mark.tc_id("TC06")
@@ -136,10 +139,118 @@ def test_tc10_data_driven_login_user3(page):
     login_page.login(user["username"], user["password"])
     assert login_page.is_login_successful(), f"Login failed for user: {user['username']}"
 
-# Preserved original CSV parameterized data-driven test
+# ==============================================================================
+# SIGNUP & REGISTRATION TEST CASES (TC37 - TC43)
+# ==============================================================================
+
+@pytest.mark.tc_id("TC37")
+def test_tc37_new_user_signup_initial_step(page):
+    """TC37: New User Signup Initial Step navigation to account info page."""
+    home_page = HomePage(page)
+    login_page = LoginPage(page)
+
+    home_page.open()
+    home_page.click_signup_login()
+    temp_email = f"auto_{int(time.time())}@example.com"
+    login_page.signup_initial("Test User", temp_email)
+
+    assert login_page.is_signup_details_page_displayed() or "signup" in page.url.lower(), "Account info page not displayed"
+
+@pytest.mark.tc_id("TC38")
+def test_tc38_signup_existing_email_error(page):
+    """TC38: Verify error message when signing up with existing email."""
+    home_page = HomePage(page)
+    login_page = LoginPage(page)
+
+    home_page.open()
+    home_page.click_signup_login()
+    login_page.signup_initial("Existing User", VALID_EMAIL)
+
+    error_msg = login_page.get_signup_error_message()
+    assert "already exist" in error_msg.lower(), f"Expected already exist error, got: '{error_msg}'"
+
+@pytest.mark.tc_id("TC39")
+def test_tc39_verify_account_created_message(page):
+    """TC39: Complete registration form and verify 'ACCOUNT CREATED!' message."""
+    home_page = HomePage(page)
+    login_page = LoginPage(page)
+
+    home_page.open()
+    home_page.click_signup_login()
+    temp_email = f"user_reg_{int(time.time())}@test.com"
+    login_page.signup_initial("Reg User", temp_email)
+
+    login_page.fill_registration_details("Password123!")
+    login_page.click_create_account()
+
+    assert login_page.is_account_created_displayed(), "'ACCOUNT CREATED!' message was not displayed"
+
+@pytest.mark.tc_id("TC40")
+def test_tc40_delete_account_flow(page):
+    """TC40: Complete registration then execute Delete Account flow."""
+    home_page = HomePage(page)
+    login_page = LoginPage(page)
+
+    home_page.open()
+    home_page.click_signup_login()
+    temp_email = f"del_user_{int(time.time())}@test.com"
+    login_page.signup_initial("Del User", temp_email)
+
+    login_page.fill_registration_details("Password123!")
+    login_page.click_create_account()
+    login_page.click_continue()
+
+    login_page.click_delete_account()
+    assert login_page.is_account_deleted_displayed(), "'ACCOUNT DELETED!' message was not displayed"
+
+@pytest.mark.tc_id("TC41")
+def test_tc41_mandatory_field_validation(page):
+    """TC41: Verify validation when submitting signup with blank fields."""
+    home_page = HomePage(page)
+    login_page = LoginPage(page)
+
+    home_page.open()
+    home_page.click_signup_login()
+    login_page.click(login_page.SIGNUP_BUTTON)
+
+    assert login_page.is_login_page_displayed(), "Should remain on login page when submitting blank signup"
+
+@pytest.mark.tc_id("TC42")
+def test_tc42_country_dropdown_selection(page):
+    """TC42: Verify Country dropdown selection in signup form."""
+    home_page = HomePage(page)
+    login_page = LoginPage(page)
+
+    home_page.open()
+    home_page.click_signup_login()
+    temp_email = f"cntry_{int(time.time())}@test.com"
+    login_page.signup_initial("Country User", temp_email)
+
+    login_page.select_country("India")
+    val = login_page.get_selected_country()
+    assert val.lower() == "india", f"Expected country 'India', got '{val}'"
+
+@pytest.mark.tc_id("TC43")
+def test_tc43_gender_radio_button(page):
+    """TC43: Verify Gender 'Mr.' radio button selection."""
+    home_page = HomePage(page)
+    login_page = LoginPage(page)
+
+    home_page.open()
+    home_page.click_signup_login()
+    temp_email = f"gender_{int(time.time())}@test.com"
+    login_page.signup_initial("Gender User", temp_email)
+
+    login_page.select_gender_mr()
+    assert login_page.is_gender_mr_checked(), "Gender 'Mr.' radio button was not checked"
+
+# ==============================================================================
+# ORIGINAL CSV DATA-DRIVEN PARAMETERIZED TEST
+# ==============================================================================
+
 @pytest.mark.parametrize("row", read_csv_data("test_data/login_data.csv"))
 def test_csv_data_driven_login(page, row):
-    """Original CSV data-driven parameterized test executing all rows."""
+    """Original CSV data-driven parameterized test executing all login rows."""
     home_page = HomePage(page)
     login_page = LoginPage(page)
 
